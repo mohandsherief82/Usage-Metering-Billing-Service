@@ -18,34 +18,39 @@ live in **EVIDENCE.md**.
 
 ## Setup
 
-\`\`\`bash
+```bash
 uv sync
 cp .env.example .env   # fill in Stripe test keys — see GUIDE.md §0
-\`\`\`
+
+```
 
 Terminal 1 — API:
-\`\`\`bash
+```bash
 uv run uvicorn billing.main:app --reload
-\`\`\`
+
+```
 
 Terminal 2 — Stripe webhook forwarding (no tunnel needed):
-\`\`\`bash
+```bash
 stripe listen --forward-to localhost:8000/webhooks/stripe
-\`\`\`
+
+```
 
 Terminal 3 — TUI dashboard:
-\`\`\`bash
+```bash
 uv run textual run --dev src/billing/tui/app.py
-\`\`\`
+
+```
 
 Run tests:
-\`\`\`bash
+```bash
 uv run pytest -v
-\`\`\`
+
+```
 
 ## Project layout
 
-\`\`\`
+```
 src/billing/
   config.py           pinned pricing constants + settings
   main.py             FastAPI app
@@ -58,7 +63,8 @@ scripts/seed_db.py     demo tenants/plans
 architecture.d2        system diagram (compile: d2 architecture.d2 architecture.svg)
 GUIDE.md               build checklist
 EVIDENCE.md            proof of correctness (no double-counting, correct cost totals, webhook security)
-\`\`\`
+
+```
 
 ## API summary
 
