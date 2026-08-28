@@ -1,0 +1,253 @@
+/* ============================================================
+   "Ledger" theme — a billing terminal, not a default TUI skin.
+   Deep charcoal base, amber for money, cyan for identifiers,
+   traffic-light thresholds for quota gauges.
+   ============================================================ */
+
+Screen {
+    background: #0b0e14;
+    color: #d8dee9;
+}
+
+/* ---------- Header / Footer ---------- */
+
+AppHeader {
+    background: #12161f;
+    color: #e3b341;
+    text-style: bold;
+    height: 3;
+    border-bottom: heavy #2a2f3a;
+}
+
+AppHeader #title {
+    text-style: bold;
+    color: #e3b341;
+}
+
+AppHeader #clock {
+    color: #7f8ea3;
+}
+
+AppHeader #conn-live {
+    color: #3fb950;
+    text-style: bold;
+}
+
+AppHeader #conn-demo {
+    color: #d29922;
+    text-style: bold;
+}
+
+AppHeader #conn-connecting {
+    color: #7f8ea3;
+    text-style: italic;
+}
+
+AppHeader Horizontal {
+    height: 100%;
+    align: left middle;
+    padding: 0 2;
+}
+
+AppHeader #title {
+    width: auto;
+}
+
+AppHeader #spacer {
+    width: 1fr;
+}
+
+AppHeader #clock {
+    width: auto;
+    padding: 0 2 0 0;
+}
+
+Footer {
+    background: #12161f;
+    color: #7f8ea3;
+}
+
+Footer > .footer--key {
+    color: #e3b341;
+    text-style: bold;
+}
+
+Footer > .footer--description {
+    color: #7f8ea3;
+}
+
+/* ---------- Shared panels ---------- */
+
+.panel {
+    background: #12161f;
+    border: round #2a2f3a;
+    padding: 1 2;
+}
+
+.panel-title {
+    text-style: bold;
+    color: #e3b341;
+}
+
+/* ---------- Stat strip ---------- */
+
+StatCard {
+    background: #12161f;
+    border: round #2a2f3a;
+    padding: 0 2;
+    height: 5;
+    width: 1fr;
+    align: center middle;
+}
+
+StatCard .value {
+    text-style: bold;
+    text-align: center;
+    width: 100%;
+}
+
+StatCard .label {
+    color: #7f8ea3;
+    text-align: center;
+    width: 100%;
+}
+
+StatCard.accent-amber .value { color: #e3b341; }
+StatCard.accent-cyan .value { color: #58a6ff; }
+StatCard.accent-green .value { color: #3fb950; }
+StatCard.accent-red .value { color: #f85149; }
+
+/* ---------- Dashboard layout ---------- */
+
+#stat-strip {
+    height: 5;
+    padding: 1 1 0 1;
+}
+
+#stat-strip > StatCard {
+    margin: 0 1 0 0;
+}
+
+#fleet-title {
+    padding: 1 2 0 2;
+}
+
+#gauge-list {
+    padding: 1 2;
+}
+
+/* ---------- Quota gauges (dashboard) ---------- */
+
+QuotaGauge {
+    height: 5;
+    background: #12161f;
+    border: round #2a2f3a;
+    padding: 0 2;
+    margin: 0 0 1 0;
+}
+
+QuotaGauge:focus {
+    border: round #e3b341;
+}
+
+QuotaGauge .name-row {
+    height: 1;
+}
+
+QuotaGauge .tenant-name {
+    text-style: bold;
+    color: #d8dee9;
+}
+
+QuotaGauge .plan-badge {
+    color: #58a6ff;
+}
+
+QuotaGauge .status-active {
+    color: #3fb950;
+}
+
+QuotaGauge .status-past_due {
+    color: #f85149;
+    text-style: bold;
+}
+
+QuotaGauge .cost {
+    color: #e3b341;
+    text-style: bold;
+}
+
+QuotaGauge .numbers {
+    color: #7f8ea3;
+}
+
+/* ---------- Tenants screen ---------- */
+
+#tenants-list {
+    width: 34;
+    border: round #2a2f3a;
+    background: #12161f;
+}
+
+#tenants-list > ListItem {
+    padding: 0 1;
+}
+
+#tenants-list > ListItem.--highlight {
+    background: #1c2230;
+}
+
+#tenant-detail {
+    border: round #2a2f3a;
+    background: #12161f;
+    padding: 1 2;
+}
+
+#tenant-detail .field-label {
+    color: #7f8ea3;
+}
+
+#tenant-detail .field-value {
+    color: #d8dee9;
+    text-style: bold;
+}
+
+/* ---------- Usage log screen ---------- */
+
+#log-table {
+    background: #12161f;
+}
+
+DataTable > .datatable--header {
+    background: #1c2230;
+    color: #e3b341;
+    text-style: bold;
+}
+
+DataTable > .datatable--cursor {
+    background: #23293a;
+}
+
+/* ---------- Help modal ---------- */
+
+HelpScreen {
+    align: center middle;
+}
+
+#help-box {
+    width: 60;
+    height: auto;
+    background: #12161f;
+    border: heavy #e3b341;
+    padding: 1 3;
+}
+
+#help-box .title {
+    text-style: bold;
+    color: #e3b341;
+}
+
+#help-box .key {
+    color: #58a6ff;
+    text-style: bold;
+}
