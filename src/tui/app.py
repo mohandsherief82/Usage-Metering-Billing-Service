@@ -1,16 +1,57 @@
-"""
-Textual App entrypoint for the operator dashboard.
+from __future__ import annotations
 
-Screens (see GUIDE.md §7):
-- Dashboard: live per-tenant used/limit/cost table, polling GET /usage
-- Tenants: browse/select tenant
-- UsageLog: tail of recent UsageEvents
+from pathlib import Path
 
-Run with: uv run textual run --dev src/billing/tui/app.py
-"""
+from textual.app import App
 
-# TODO: from textual.app import App; wire up screens/dashboard.py etc.
+from billing.tui.data import BillingDataSource
+from billing.tui.screens import DashboardScreen, HelpScreen, TenantsScreen, UsageLogScreen
+
+THEME_PATH = Path(__file__).parent / "theme.tcss"
+
+
+class LedgerApp(App):
+    """A unique-themed, non-blocking terminal dashboard for usage & billing."""
+
+    CSS_PATH = THEME_PATH
+    TITLE = "LEDGER"
+
+    BINDINGS = [
+        ("d", "goto_dashboard", "Dashboard"),
+        ("t", "goto_tenants", "Tenants"),
+        ("l", "goto_log", "Usage log"),
+        ("question_mark", "show_help", "Help"),
+        ("q", "quit", "Quit"),
+    ]
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        
+		self.data_source = BillingDataSource()
+
+    def on_mount(self) -> None:
+        self.install_screen(DashboardScreen(self.data_source), name="dashboard")
+        self.install_screen(TenantsScreen(self.data_source), name="tenants")
+        
+		self.install_screen(UsageLogScreen(self.data_source), name="log")
+        self.push_screen("dashboard")
+
+    def action_goto_dashboard(self) -> None:
+        self.switch_screen("dashboard")
+
+    def action_goto_tenants(self) -> None:
+        self.switch_screen("tenants")
+
+    def action_goto_log(self) -> None:
+        self.switch_screen("log")
+
+    def action_show_help(self) -> None:
+        self.push_screen(HelpScreen())
 
 
 def run() -> None:
-    raise NotImplementedError("wire up the Textual App and call .run()")
+    LedgerApp().run()
+
+
+if __name__ == "__main__":
+    run()
