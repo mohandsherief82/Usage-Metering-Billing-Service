@@ -1,12 +1,10 @@
 from datetime import datetime
 
+from tui.data import SourceMode
 from textual.app import ComposeResult
 from textual.containers import Horizontal
-
 from textual.reactive import reactive
 from textual.widgets import Label, Static
-
-from billing.tui.data import SourceMode
 
 
 class AppHeader(Static):

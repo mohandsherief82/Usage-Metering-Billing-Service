@@ -1,9 +1,7 @@
+from tui.data import TenantUsage
 from rich.text import Text
-
 from textual.reactive import reactive
 from textual.widgets import Static
-
-from billing.tui.data import TenantUsage
 
 _BAR_WIDTH = 32
 

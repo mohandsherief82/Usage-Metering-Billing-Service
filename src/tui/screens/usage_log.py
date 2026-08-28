@@ -1,11 +1,9 @@
+from tui.data import BillingDataSource
+from tui.widgets import AppHeader
 from textual import work
 from textual.app import ComposeResult
-
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Label
-
-from billing.tui.data import BillingDataSource, UsageEvent
-from billing.tui.widgets import AppHeader
 
 REFRESH_INTERVAL = 2.0
 

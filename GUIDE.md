@@ -113,12 +113,12 @@ Two practical routes:
 
 ## 7. TUI (Textual)
 
-- [ ] `App` with a couple of `Screen`s: live dashboard (per-tenant used/limit/cost table,
+- [X] `App` with a couple of `Screen`s: live dashboard (per-tenant used/limit/cost table,
       refreshed on a timer via `GET /usage`), tenant list, raw usage-event log/tail.
-- [ ] Use `DataTable`, `Sparkline`/`ProgressBar` for quota gauges, and CSS
+- [X] Use `DataTable`, `Sparkline`/`ProgressBar` for quota gauges, and CSS
       (`app.css` or inline `DEFAULT_CSS`) for a distinct visual identity — this is the
       "fancy" part, lean into it once the plumbing works.
-- [ ] Textual docs/tutorial: https://textual.textualize.io/tutorial/
+- [X] Textual docs/tutorial: https://textual.textualize.io/tutorial/
       Widget gallery: https://textual.textualize.io/widget_gallery/
 
 ## 8. Tests

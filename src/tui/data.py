@@ -1,11 +1,8 @@
 import os
 import random
-
 import time
-
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-
+from datetime import UTC, datetime, timedelta
 from enum import Enum
 
 import httpx
@@ -141,7 +138,7 @@ class DemoDataSource:
         self._seed_events()
 
     def _seed_events(self) -> None:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(30):
             tid = self._rng.choice(list(self._tenants))
@@ -180,7 +177,7 @@ class DemoDataSource:
                         event_type=self._rng.choice(self._EVENT_TYPES),
 
                         quantity=step,
-                        created_at=datetime.now(timezone.utc),
+                        created_at=datetime.now(UTC),
                     )
                 )
 

@@ -1,6 +1,5 @@
 from textual.app import ComposeResult
 from textual.containers import Vertical
-
 from textual.reactive import reactive
 from textual.widgets import Label, Static
 
