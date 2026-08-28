@@ -26,7 +26,7 @@ cp .env.example .env   # fill in Stripe test keys — see GUIDE.md §0
 
 Terminal 1 — API:
 ```bash
-uv run uvicorn billing.main:app --reload
+uv run uvicorn main:app --reload
 
 ```
 
@@ -38,7 +38,7 @@ stripe listen --forward-to localhost:8000/webhooks/stripe
 
 Terminal 3 — TUI dashboard:
 ```bash
-uv run textual run --dev src/billing/tui/app.py
+uv run python -m textual run --dev src/tui/app.py
 
 ```
 
@@ -51,7 +51,7 @@ uv run pytest -v
 ## Project layout
 
 ```
-src/billing/
+src/
   config.py           pinned pricing constants + settings
   main.py             FastAPI app
   db/                 models, session
