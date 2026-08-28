@@ -38,7 +38,7 @@ stripe listen --forward-to localhost:8000/webhooks/stripe
 
 Terminal 3 — TUI dashboard:
 ```bash
-uv run python -m textual run --dev src/tui/app.py
+uv run python src/tui/app.py
 
 ```
 
