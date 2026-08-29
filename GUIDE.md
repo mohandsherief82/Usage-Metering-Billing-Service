@@ -57,9 +57,9 @@ Two practical routes:
          catch the unique-constraint `IntegrityError` and re-fetch the existing row (SQLite).
       2. If a row already existed for that key → return **that** row's result, do **not**
          run quota logic again for a duplicate (the original response already reflected it).
-- [ ] Idempotency-key pattern reference: https://docs.stripe.com/api/idempotent_requests
+- [X] Idempotency-key pattern reference: https://docs.stripe.com/api/idempotent_requests
       (Stripe's own docs — same pattern, useful even though this isn't a Stripe call).
-- [ ] **EVIDENCE.md proof**: write a test that calls `record()` twice with the same key
+- [X] **EVIDENCE.md proof**: write a test that calls `record()` twice with the same key
       (simulating a client retry), assert only one `UsageEvent` row exists, and paste the
       test output / a `curl` transcript sending the same `POST /usage/record` body+header
       twice showing identical responses and a single DB row.
