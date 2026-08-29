@@ -1,10 +1,10 @@
-"""FastAPI app entrypoint — mounts usage/webhooks/checkout routers."""
-
 from fastapi import FastAPI
+from src.api.usage import usage_router
 
 app = FastAPI(title="Usage Metering & Billing")
 
-# TODO: app.include_router(usage.router); app.include_router(webhooks.router); ...
+# TODO: app.include_router(webhooks.router); ...
+app.include_router(usage_router)
 
 
 def run() -> None:

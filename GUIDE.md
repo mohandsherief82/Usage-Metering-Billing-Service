@@ -68,13 +68,13 @@ Two practical routes:
 
 - [X] After a usage event is durably recorded, sum the tenant's usage for the current
       billing period and compare to `Plan.monthly_quota`.
-- [ ] Over limit → return **402 Payment Required** if the plan itself is exhausted/unpaid,
+- [X] Over limit → return **402 Payment Required** if the plan itself is exhausted/unpaid,
       or **429 Too Many Requests** if it's a rate/quota throttle — pick one convention and
       document it in README (mentor asked for "the correct status codes", so be explicit
       about *which* condition maps to which code).
-- [ ] Response body always includes a human-readable `message` (e.g. `"tenant acme is at
+- [X] Response body always includes a human-readable `message` (e.g. `"tenant acme is at
       1000/1000 API calls for this billing period"`), not just the status code.
-- [ ] HTTP status code reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+- [X] HTTP status code reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
 ## 5. Cost calculation
 
