@@ -1,0 +1,37 @@
+# Manifest the evaluator reads to boot and probe this capstone.
+# Required by the brief, Section 10. Keep this in sync with reality as you
+# build — a run: command that doesn't actually boot the system is worse
+# than an honest placeholder.
+
+run: "uv run uvicorn billing.main:app --host 0.0.0.0 --port 8000"
+seed: "uv run python scripts/seed_db.py"
+test: "uv run pytest -v"
+
+base_url: "http://localhost:8000"
+
+# Endpoints the evaluator will probe (Section 12, Layer 2 acceptance probes).
+# Update descriptions/paths as the real routes solidify.
+endpoints:
+  - method: POST
+    path: /usage/record
+    description: >
+      Record one billable usage event. Idempotent via the Idempotency-Key
+      header — same key sent twice returns the original result, no second
+      event. Enforces quota, returns 402/429 with a message when exceeded.
+  - method: GET
+    path: /usage
+    description: >
+      Rolled-up usage for a tenant: { used, limit, cost }. Cost reflects
+      the pinned pricing constants in src/billing/config.py.
+  - method: POST
+    path: /checkout
+    description: >
+      Create a Stripe Checkout Session (test mode) for a tenant to
+      subscribe to a plan.
+  - method: POST
+    path: /webhooks/stripe
+    description: >
+      Stripe webhook receiver. Verifies signature (bad signature -> 400),
+      deduplicates by event id (replay -> no-op), updates tenant plan/status
+      on checkout.session.completed / customer.subscription.updated /
+      customer.subscription.deleted.
