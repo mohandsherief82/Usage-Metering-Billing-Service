@@ -52,7 +52,7 @@ Two practical routes:
 
 ## 3. Metering (`MeterService.record`)
 
-- [ ] `record(tenant_id, event_type, quantity, idempotency_key)`:
+- [X] `record(tenant_id, event_type, quantity, idempotency_key)`:
       1. `INSERT ... ON CONFLICT (idempotency_key) DO NOTHING RETURNING *` (Postgres) or
          catch the unique-constraint `IntegrityError` and re-fetch the existing row (SQLite).
       2. If a row already existed for that key → return **that** row's result, do **not**
