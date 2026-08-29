@@ -20,7 +20,7 @@ live in **EVIDENCE.md**.
 
 ```bash
 uv sync
-cp .env.example .env   # fill in Stripe test keys — see GUIDE.md §0
+cp .env.example .env   # fill in Stripe test keys
 
 ```
 
