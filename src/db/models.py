@@ -1,8 +1,8 @@
 import enum
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Enum, Integer, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
@@ -47,10 +47,93 @@ class Tenant(Base):
         )
 
 
-# class Plan(Base): ...
-#     Once this lands, add:
-#       Tenant.plan_id -> ForeignKey("plans.id")
-# class Subscription(Base): ...
+class Plan(Base):
+    __tablename__ = "plans"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    slug: Mapped[str] = mapped_column(String(32), unique=True, nullable=False)
+
+    name: Mapped[str] = mapped_column(String(64), nullable=False)
+
+    monthly_api_call_quota: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    monthly_ai_token_quota: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    price_cents: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    stripe_price_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    tenants: Mapped[list["Tenant"]] = relationship(back_populates="plan")
+    subscriptions: Mapped[list["Subscription"]] = relationship(back_populates="plan")
+
+    def __repr__(self) -> str:  # pragma: no cover — debugging aid only
+        return (
+            f"Plan(id={self.id}, slug={self.slug!r}, "
+            f"api_calls={self.monthly_api_call_quota}, "
+            f"ai_tokens={self.monthly_ai_token_quota})"
+        )
+
+
+class SubscriptionStatus(str, enum.Enum):
+
+    ACTIVE = "active"
+    PAST_DUE = "past_due"
+    CANCELED = "canceled"
+    INCOMPLETE = "incomplete"
+    TRIALING = "trialing"
+
+
+class Subscription(Base):
+
+    __tablename__ = "subscriptions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    tenant_id: Mapped[str] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    plan_id: Mapped[int] = mapped_column(ForeignKey("plans.id"), nullable=False)
+
+    stripe_subscription_id: Mapped[str] = mapped_column(
+        String(255), unique=True, nullable=False
+    )
+
+    status: Mapped[SubscriptionStatus] = mapped_column(
+        Enum(SubscriptionStatus, native_enum=False, length=20),
+        nullable=False,
+    )
+
+    current_period_start: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+
+    current_period_end: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    tenant: Mapped["Tenant"] = relationship(back_populates="subscriptions")
+    plan: Mapped["Plan"] = relationship(back_populates="subscriptions")
+
+    def __repr__(self) -> str:
+        return (
+            f"Subscription(id={self.id}, tenant_id={self.tenant_id!r}, "
+            f"stripe_subscription_id={self.stripe_subscription_id!r}, "
+            f"status={self.status.value})"
+        )
+
+
+# --- Not yet implemented — next items in GUIDE.md §2 ----------------------
 # class UsageEvent(Base): ...
 #     idempotency_key: Mapped[str] = mapped_column(String(255), unique=True)
 # class WebhookEvent(Base): ...

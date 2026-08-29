@@ -46,8 +46,8 @@ Two practical routes:
       `ForeignKey` constraint gets added once `Plan` exists (next item below), so it isn't
       referencing a table that doesn't exist yet. `status` is a proper enum
       (`active` / `past_due` / `canceled`), not a free-text string.
-- [ ] `Plan` (id, name, monthly_quota, price_cents, pricing_config — pinned constants)
-- [ ] `Subscription` (id, tenant_id, stripe_subscription_id, status, current_period_start/end)
+- [X] `Plan` (id, name, monthly_quota, price_cents, pricing_config — pinned constants)
+- [X] `Subscription` (id, tenant_id, stripe_subscription_id, status, current_period_start/end)
 - [ ] `UsageEvent` (id, tenant_id, event_type, quantity, metadata, **idempotency_key UNIQUE**, created_at)
 - [ ] `WebhookEvent` (id = stripe event id PRIMARY KEY, type, processed_at) — this table *is*
       your webhook dedupe mechanism.
