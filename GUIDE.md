@@ -40,7 +40,7 @@ Two practical routes:
 ## 2. Data model
 
 - [X] `Tenant` (id, name, stripe_customer_id, plan_id, status) — implemented in
-      `src/billing/db/models.py`. Uses the tenant slug (e.g. `"acme"`) as the primary key
+      `src/db/models.py`. Uses the tenant slug (e.g. `"acme"`) as the primary key
       rather than a surrogate int, since that's the value that actually shows up in API
       paths, idempotency keys, and logs. `plan_id` is a plain column for now — the
       `ForeignKey` constraint gets added once `Plan` exists (next item below), so it isn't
@@ -48,8 +48,8 @@ Two practical routes:
       (`active` / `past_due` / `canceled`), not a free-text string.
 - [X] `Plan` (id, name, monthly_quota, price_cents, pricing_config — pinned constants)
 - [X] `Subscription` (id, tenant_id, stripe_subscription_id, status, current_period_start/end)
-- [ ] `UsageEvent` (id, tenant_id, event_type, quantity, metadata, **idempotency_key UNIQUE**, created_at)
-- [ ] `WebhookEvent` (id = stripe event id PRIMARY KEY, type, processed_at) — this table *is*
+- [X] `UsageEvent` (id, tenant_id, event_type, quantity, metadata, **idempotency_key UNIQUE**, created_at)
+- [X] `WebhookEvent` (id = stripe event id PRIMARY KEY, type, processed_at) — this table *is*
       your webhook dedupe mechanism.
 - [ ] Every query scoped by `tenant_id` — no cross-tenant leakage (add a test asserting this).
 - [ ] Alembic migration for the above: https://alembic.sqlalchemy.org/en/latest/tutorial.html
