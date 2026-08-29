@@ -66,7 +66,7 @@ Two practical routes:
 
 ## 4. Quotas
 
-- [ ] After a usage event is durably recorded, sum the tenant's usage for the current
+- [X] After a usage event is durably recorded, sum the tenant's usage for the current
       billing period and compare to `Plan.monthly_quota`.
 - [ ] Over limit → return **402 Payment Required** if the plan itself is exhausted/unpaid,
       or **429 Too Many Requests** if it's a rate/quota throttle — pick one convention and
