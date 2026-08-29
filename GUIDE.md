@@ -39,7 +39,13 @@ Two practical routes:
 
 ## 2. Data model
 
-- [ ] `Tenant` (id, name, stripe_customer_id, plan_id, status)
+- [X] `Tenant` (id, name, stripe_customer_id, plan_id, status) — implemented in
+      `src/billing/db/models.py`. Uses the tenant slug (e.g. `"acme"`) as the primary key
+      rather than a surrogate int, since that's the value that actually shows up in API
+      paths, idempotency keys, and logs. `plan_id` is a plain column for now — the
+      `ForeignKey` constraint gets added once `Plan` exists (next item below), so it isn't
+      referencing a table that doesn't exist yet. `status` is a proper enum
+      (`active` / `past_due` / `canceled`), not a free-text string.
 - [ ] `Plan` (id, name, monthly_quota, price_cents, pricing_config — pinned constants)
 - [ ] `Subscription` (id, tenant_id, stripe_subscription_id, status, current_period_start/end)
 - [ ] `UsageEvent` (id, tenant_id, event_type, quantity, metadata, **idempotency_key UNIQUE**, created_at)
@@ -49,6 +55,11 @@ Two practical routes:
 - [ ] Alembic migration for the above: https://alembic.sqlalchemy.org/en/latest/tutorial.html
 - [ ] All money fields are `Integer` (cents / micro-units) — never `Float`/`Numeric` for
       currency arithmetic. Enforce in `config.py` + code review, not just convention.
+- [ ] **DB choice**: the brief's stack table (Section 10) lists Postgres via Docker as the
+      primary path, SQLite as the fallback — not the other way around. Default
+      `DATABASE_URL` in `.env.example` is SQLite for zero-setup dev, but stand up
+      `docker-compose.yml` (see §11) before you're deep into implementation, not as an
+      afterthought — Alembic + Postgres-specific `ON CONFLICT` syntax (§3) assumes it.
 
 ## 3. Metering (`MeterService.record`)
 
@@ -129,7 +140,30 @@ Two practical routes:
 - [ ] `tests/test_webhooks.py` — valid signature accepted, invalid rejected (400), replay ignored.
 - [ ] `uv run pytest -v` output captured into EVIDENCE.md alongside the manual transcripts.
 
-## 9. Docs (Section 10 deliverables)
+## 9. Shared requirements (every capstone must show these)
+
+Section 12 of the brief lists requirements that apply across every FlyRank capstone, not
+just this one. Two of them aren't covered by §1–8 above and are easy to miss:
+
+- [ ] **Validation at the boundary** — every API route rejects malformed input with a clean
+      4xx (`422`/`400` with a body explaining what's wrong), never a raw `500`. Use Pydantic
+      request models for this — a body that fails schema validation should never reach
+      service code. Covers e.g. negative `quantity`, missing `idempotency_key`, unknown
+      `tenant_id`.
+- [ ] **≥1 background job** — some slow/bulk work must run off the request path, with
+      retries and a failure alert (even just a log line at ERROR level counts as the
+      "alert" for a capstone). The natural fit here is the **reconciliation job** from §11 —
+      if you pick that as your one deep-dive stretch goal, it satisfies this requirement too;
+      otherwise you need a smaller stand-in (e.g. a periodic job that recomputes cost
+      rollups) so this box isn't left unchecked.
+- [ ] Secrets clean (env only, never logged) — already covered by §0.
+- [ ] Cost tracked per call, attributed, with a budget guard — already covered by §5
+      (quota enforcement *is* the budget guard here).
+- [ ] Layered architecture (data/logic/HTTP separated) — already the shape of `db/` /
+      `services/` / `api/` in the folder structure.
+- [ ] Idempotency where it matters — already covered by §3.
+
+## 10. Docs & submission pack (Section 10–11 deliverables)
 
 - [ ] `README.md` — what it is, stack, how to run (`uv sync`, `.env` setup, `stripe listen`,
       `uv run uvicorn ...`, `uv run textual run ...`), API summary.
@@ -137,8 +171,18 @@ Two practical routes:
       `d2 architecture.d2 architecture.svg` (D2 install: https://d2lang.com/tour/install).
 - [ ] `EVIDENCE.md` — the three proofs from §3, §5, §6 above, all in one file.
 - [ ] `.env.example` present, `.env` git-ignored (both already done).
+- [ ] `capstone.yaml` — the manifest the evaluator reads (`run:`, `seed:`, `test:`,
+      `base_url:`, endpoints to probe). Stub already created — fill in real values as each
+      piece comes online; don't leave placeholder commands in the final submission.
+- [ ] `BUILDLOG.md` — your AI-usage log (where AI helped, where it was wrong, what you
+      changed). Stub already created — update it *as you build*, not retroactively; you
+      won't remember the specifics by submission time.
+- [ ] Repo hygiene per Section 11 of the brief: separate public repo from day one, never
+      inside a repo with other work, suggested name pattern
+      `flyrank-capstone-metering-billing` (lowercase, hyphens), small meaningful commits
+      as you go so each phase in §8 is visible in history.
 
-## 10. Nice-to-haves once core is green
+## 11. Nice-to-haves once core is green
 
 A finished core with one polished stretch beats three half-stretches. Pick **one** of the
 deep-dive items below and take it all the way — each is a genuine "I went deep" interview
@@ -146,7 +190,8 @@ story on its own; three shallow attempts isn't.
 
 - [ ] Rate limiting header hints (`Retry-After` on 429).
 - [ ] Seed script (`scripts/seed_db.py`) for demo tenants/plans — stub already created.
-- [ ] `docker-compose.yml` for local Postgres if you don't want SQLite.
+- [ ] `docker-compose.yml` for local Postgres — this is the brief's primary DB path (§2
+      above), not just a nice-to-have; stand it up early rather than deferring it.
 
 ### Pick one deep-dive stretch goal
 
@@ -162,7 +207,8 @@ story on its own; three shallow attempts isn't.
       — a great "I went deep" story precisely because it's easy to get subtly wrong.
 - [ ] **Reconciliation job** — a nightly job comparing your database's view of
       tenants/subscriptions against Stripe's actual state via the API; catches webhooks that
-      were missed or failed to process, and reports/repairs the drift.
+      were missed or failed to process, and reports/repairs the drift. (Also satisfies the
+      "≥1 background job" shared requirement in §9 if you pick this one.)
 - [ ] **A full test suite** — beyond the four required tests: cover the scary edge cases
       (concurrent duplicate requests, out-of-order webhooks, clock/timezone boundaries on
       billing periods), keep it deterministic (no real network/time dependence), and
