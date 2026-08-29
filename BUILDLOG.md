@@ -16,9 +16,9 @@ exact bytes to stripe.Webhook.construct_event."
 ## Format
 
 ### <date> — <what you were building>
-- **Where AI helped**: Code generation
+- **Where AI helped**: ... 
 - **Where it was wrong / had to be corrected**: ...
-- **What I changed and why**:  
+- **What I changed and why**: ... 
 
 ---
 
@@ -28,11 +28,10 @@ exact bytes to stripe.Webhook.construct_event."
 - **Where AI helped**: generated the initial folder structure, `pyproject.toml`, D2
   architecture diagram, GUIDE.md checklist, and the full Textual TUI (screens, custom
   widgets, theme, async data layer with live/demo fallback).
-- **Where it was wrong / had to be corrected**: _(fill in as you review/modify the
-  generated TUI and scaffolding — note anything you had to fix or disagreed with)_
-- **What I changed and why**: _(fill in)_
+- **Where it was wrong / had to be corrected**: the model used has created an extremely complex folder structure. Also, the run command generated to run the TUI wasn't correct.
+- **What I changed and why**: I have simplified the folder structure to a more organized structure for easier traversal and updated the model's understanding of the hierarchy. The run command of the TUI was running a Welcome page to the textual framework, therefore I had to update it and use the correct command.
 
-### <next entry — data model / Tenant schema>
-- **Where AI helped**: ...
-- **Where it was wrong / had to be corrected**: ...
-- **What I changed and why**: ...
+### Data model schema
+- **Where AI helped**: Code generation
+- **Where it was wrong / had to be corrected**: nothing. 
+- **What I changed and why**: after reviewing the generated artificats, I have found everything defined perfectly according to the design I choose and available in the GUIDE.md file. 
