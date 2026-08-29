@@ -1,6 +1,7 @@
 import pytest
-from services.metering import MeterService
-from db.models import UsageEvent, Tenant, Plan
+
+from src.services.metering import MeterService
+from src.db.models import UsageEvent, Tenant, Plan
 
 
 def test_record_usage_idempotency(db_session):
