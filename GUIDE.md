@@ -52,8 +52,8 @@ Two practical routes:
 - [X] `WebhookEvent` (id = stripe event id PRIMARY KEY, type, processed_at) — this table *is*
       your webhook dedupe mechanism.
 - [X] Every query scoped by `tenant_id` — no cross-tenant leakage (add a test asserting this).
-- [ ] Alembic migration for the above: https://alembic.sqlalchemy.org/en/latest/tutorial.html
-- [ ] All money fields are `Integer` (cents / micro-units) — never `Float`/`Numeric` for
+- [X] Alembic migration for the above: https://alembic.sqlalchemy.org/en/latest/tutorial.html
+- [X] All money fields are `Integer` (cents / micro-units) — never `Float`/`Numeric` for
       currency arithmetic. Enforce in `config.py` + code review, not just convention.
 - [ ] **DB choice**: the brief's stack table (Section 10) lists Postgres via Docker as the
       primary path, SQLite as the fallback — not the other way around. Default

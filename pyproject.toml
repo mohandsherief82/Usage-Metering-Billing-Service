@@ -42,3 +42,9 @@ asyncio_mode = "auto"
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+]
