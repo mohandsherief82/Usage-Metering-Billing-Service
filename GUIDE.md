@@ -51,7 +51,7 @@ Two practical routes:
 - [X] `UsageEvent` (id, tenant_id, event_type, quantity, metadata, **idempotency_key UNIQUE**, created_at)
 - [X] `WebhookEvent` (id = stripe event id PRIMARY KEY, type, processed_at) — this table *is*
       your webhook dedupe mechanism.
-- [ ] Every query scoped by `tenant_id` — no cross-tenant leakage (add a test asserting this).
+- [X] Every query scoped by `tenant_id` — no cross-tenant leakage (add a test asserting this).
 - [ ] Alembic migration for the above: https://alembic.sqlalchemy.org/en/latest/tutorial.html
 - [ ] All money fields are `Integer` (cents / micro-units) — never `Float`/`Numeric` for
       currency arithmetic. Enforce in `config.py` + code review, not just convention.

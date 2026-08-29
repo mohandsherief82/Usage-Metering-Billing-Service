@@ -26,7 +26,7 @@ class Tenant(Base):
         String(255), unique=True, nullable=True
     )
 
-    plan_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    plan_id: Mapped[int | None] = mapped_column(ForeignKey("plans.id"), nullable=True)
 
     status: Mapped[TenantStatus] = mapped_column(
         Enum(TenantStatus, native_enum=False, length=20),
@@ -39,6 +39,12 @@ class Tenant(Base):
         default=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
+
+    plan: Mapped["Plan | None"] = relationship(back_populates="tenants")
+
+    subscriptions: Mapped[list["Subscription"]] = relationship(back_populates="tenant")
+
+    usage_events: Mapped[list["UsageEvent"]] = relationship(back_populates="tenant")
 
     def __repr__(self) -> str:
         return (
