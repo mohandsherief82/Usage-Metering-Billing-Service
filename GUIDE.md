@@ -165,19 +165,19 @@ just this one. Two of them aren't covered by §1–8 above and are easy to miss:
 
 ## 10. Docs & submission pack (Section 10–11 deliverables)
 
-- [ ] `README.md` — what it is, stack, how to run (`uv sync`, `.env` setup, `stripe listen`,
+- [X] `README.md` — what it is, stack, how to run (`uv sync`, `.env` setup, `stripe listen`,
       `uv run uvicorn ...`, `uv run textual run ...`), API summary.
-- [ ] Architecture diagram — `architecture.d2` (already in repo root) →
+- [X] Architecture diagram — `architecture.d2` (already in repo root) →
       `d2 architecture.d2 architecture.svg` (D2 install: https://d2lang.com/tour/install).
-- [ ] `EVIDENCE.md` — the three proofs from §3, §5, §6 above, all in one file.
-- [ ] `.env.example` present, `.env` git-ignored (both already done).
-- [ ] `capstone.yaml` — the manifest the evaluator reads (`run:`, `seed:`, `test:`,
+- [X] `EVIDENCE.md` — the three proofs from §3, §5, §6 above, all in one file.
+- [X] `.env.example` present, `.env` git-ignored (both already done).
+- [X] `capstone.yaml` — the manifest the evaluator reads (`run:`, `seed:`, `test:`,
       `base_url:`, endpoints to probe). Stub already created — fill in real values as each
       piece comes online; don't leave placeholder commands in the final submission.
-- [ ] `BUILDLOG.md` — your AI-usage log (where AI helped, where it was wrong, what you
+- [X] `BUILDLOG.md` — your AI-usage log (where AI helped, where it was wrong, what you
       changed). Stub already created — update it *as you build*, not retroactively; you
       won't remember the specifics by submission time.
-- [ ] Repo hygiene per Section 11 of the brief: separate public repo from day one, never
+- [X] Repo hygiene per Section 11 of the brief: separate public repo from day one, never
       inside a repo with other work, suggested name pattern
       `flyrank-capstone-metering-billing` (lowercase, hyphens), small meaningful commits
       as you go so each phase in §8 is visible in history.
