@@ -55,7 +55,7 @@ Two practical routes:
 - [X] Alembic migration for the above: https://alembic.sqlalchemy.org/en/latest/tutorial.html
 - [X] All money fields are `Integer` (cents / micro-units) — never `Float`/`Numeric` for
       currency arithmetic. Enforce in `config.py` + code review, not just convention.
-- [ ] **DB choice**: the brief's stack table (Section 10) lists Postgres via Docker as the
+- [X] **DB choice**: the brief's stack table (Section 10) lists Postgres via Docker as the
       primary path, SQLite as the fallback — not the other way around. Default
       `DATABASE_URL` in `.env.example` is SQLite for zero-setup dev, but stand up
       `docker-compose.yml` (see §11) before you're deep into implementation, not as an
