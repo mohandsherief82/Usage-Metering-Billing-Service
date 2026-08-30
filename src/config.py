@@ -17,13 +17,14 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-
+# Base API call pricing
 PRICE_PER_API_CALL_CENTS = 1  # $0.01 / call, example
 
+# Unit conversion reference: 1 cent = 10,000 microcents ($1 = 1,000,000 microcents)
 MICROCENTS_PER_CENT = 10_000
 
-PRICE_INPUT_TOKEN_MICROCENTS = 30
-PRICE_CACHED_INPUT_TOKEN_MICROCENTS = 3
-PRICE_REASONING_TOKEN_MICROCENTS = 150
-PRICE_OUTPUT_TOKEN_MICROCENTS = 150
+PRICE_INPUT_TOKEN_MICROCENTS = 30           # 30 microcents per input token ($3.00 / 1M tokens)
+PRICE_CACHED_INPUT_TOKEN_MICROCENTS = 3     # 3 microcents per cached input token ($0.30 / 1M tokens)
+PRICE_REASONING_TOKEN_MICROCENTS = 150      # 150 microcents per reasoning token ($15.00 / 1M tokens)
+PRICE_OUTPUT_TOKEN_MICROCENTS = 150         # 150 microcents per output token ($15.00 / 1M tokens)
 

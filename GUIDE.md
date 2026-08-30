@@ -91,14 +91,14 @@ Two practical routes:
 
 - [X] `CostService.rollup(tenant_id, period)` sums `UsageEvent.quantity` by `event_type`
       for the period and multiplies by the pinned per-unit price from `config.py`.
-- [ ] AI token pricing must separately account for: input tokens, **cached** input tokens
+- [X] AI token pricing must separately account for: input tokens, **cached** input tokens
       (usually priced lower), **reasoning/thinking** tokens, and output tokens — model this
       as distinct `event_type`s (`input_tokens`, `cached_input_tokens`, `reasoning_tokens`,
       `output_tokens`) each with its own price-per-unit constant, not one blended rate.
       Reference for the shape of this pricing model: https://docs.anthropic.com/en/docs/about-claude/pricing
       and https://platform.openai.com/docs/pricing (for comparison — pin your *own* made-up
       constants in `config.py`, don't hardcode a live vendor price that will drift).
-- [ ] All pricing constants live in one place (`src/billing/config.py`) with comments citing
+- [X] All pricing constants live in one place (`src/billing/config.py`) with comments citing
       units (e.g. "cents per 1K tokens"), never inline magic numbers in service code.
 - [ ] **EVIDENCE.md proof**: a test with a hand-computed expected total (e.g. 1,000 cached
       input + 500 reasoning + 2,000 output tokens → exact expected cents) asserted against
@@ -136,7 +136,7 @@ Two practical routes:
 
 - [X] `tests/test_metering_idempotency.py` — double-submit proof (see §3).
 - [ ] `tests/test_quota.py` — under-limit allowed, at-limit rejected with correct code+message.
-- [ ] `tests/test_cost_calculation.py` — hand-computed totals (see §5).
+- [X] `tests/test_cost_calculation.py` — hand-computed totals (see §5).
 - [ ] `tests/test_webhooks.py` — valid signature accepted, invalid rejected (400), replay ignored.
 - [ ] `uv run pytest -v` output captured into EVIDENCE.md alongside the manual transcripts.
 
