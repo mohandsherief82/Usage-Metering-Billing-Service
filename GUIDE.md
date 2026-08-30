@@ -89,7 +89,7 @@ Two practical routes:
 
 ## 5. Cost calculation
 
-- [ ] `CostService.rollup(tenant_id, period)` sums `UsageEvent.quantity` by `event_type`
+- [X] `CostService.rollup(tenant_id, period)` sums `UsageEvent.quantity` by `event_type`
       for the period and multiplies by the pinned per-unit price from `config.py`.
 - [ ] AI token pricing must separately account for: input tokens, **cached** input tokens
       (usually priced lower), **reasoning/thinking** tokens, and output tokens — model this
