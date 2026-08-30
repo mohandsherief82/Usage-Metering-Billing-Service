@@ -1,23 +1,6 @@
-import pytest
+from sqlalchemy.orm import Session
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
-
-from db.models import Base, Tenant, UsageEvent, UsageEventType
-
-
-@pytest.fixture
-def db_session():
-    engine = create_engine("sqlite:///:memory:")
-    Base.metadata.create_all(engine)
-
-    TestingSessionLocal = sessionmaker(bind=engine)
-    session = TestingSessionLocal()
-
-    yield session
-
-    session.close()
-    Base.metadata.drop_all(engine)
+from db.models import Tenant, UsageEvent, UsageEventType
 
 
 def test_tenant_data_isolation(db_session: Session):
