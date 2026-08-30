@@ -100,7 +100,7 @@ Two practical routes:
       constants in `config.py`, don't hardcode a live vendor price that will drift).
 - [X] All pricing constants live in one place (`src/billing/config.py`) with comments citing
       units (e.g. "cents per 1K tokens"), never inline magic numbers in service code.
-- [ ] **EVIDENCE.md proof**: a test with a hand-computed expected total (e.g. 1,000 cached
+- [X] **EVIDENCE.md proof**: a test with a hand-computed expected total (e.g. 1,000 cached
       input + 500 reasoning + 2,000 output tokens → exact expected cents) asserted against
       `CostService.rollup()`'s output, with the test output pasted in.
 
@@ -189,27 +189,6 @@ deep-dive items below and take it all the way — each is a genuine "I went deep
 story on its own; three shallow attempts isn't.
 
 - [ ] Rate limiting header hints (`Retry-After` on 429).
-- [ ] Seed script (`scripts/seed_db.py`) for demo tenants/plans — stub already created.
-- [ ] `docker-compose.yml` for local Postgres — this is the brief's primary DB path (§2
+- [X] Seed script (`scripts/seed_db.py`) for demo tenants/plans — stub already created.
+- [X] `docker-compose.yml` for local Postgres — this is the brief's primary DB path (§2
       above), not just a nice-to-have; stand it up early rather than deferring it.
-
-### Pick one deep-dive stretch goal
-
-- [ ] **Overage billing** — allow usage beyond the plan limit instead of hard-rejecting,
-      and calculate the additional charges as they accrue (plus a projected end-of-period
-      cost based on current pace).
-- [ ] **Invoices** — generate a monthly statement per tenant with itemized usage line items
-      (mirrors what `CostService.rollup()` already computes, formatted as a real invoice).
-- [ ] **Usage alerts** — notify a tenant at 80% and 100% of their quota (log/webhook/email
-      stub is fine — the logic of *when* and *exactly once* per threshold is the point).
-- [ ] **Proration** — correctly handle a mid-cycle plan upgrade/downgrade: credit the unused
-      portion of the old plan, charge the prorated portion of the new one. Genuinely tricky
-      — a great "I went deep" story precisely because it's easy to get subtly wrong.
-- [ ] **Reconciliation job** — a nightly job comparing your database's view of
-      tenants/subscriptions against Stripe's actual state via the API; catches webhooks that
-      were missed or failed to process, and reports/repairs the drift. (Also satisfies the
-      "≥1 background job" shared requirement in §9 if you pick this one.)
-- [ ] **A full test suite** — beyond the four required tests: cover the scary edge cases
-      (concurrent duplicate requests, out-of-order webhooks, clock/timezone boundaries on
-      billing periods), keep it deterministic (no real network/time dependence), and
-      runnable in one command (`uv run pytest`).

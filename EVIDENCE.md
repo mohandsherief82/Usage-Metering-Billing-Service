@@ -32,16 +32,29 @@ Test: `tests/test_cost_calculation.py`
 Hand-computed expectation:
 ```
 input_tokens:        <n> * PRICE_INPUT_TOKEN_MICROCENTS         = <x>
-cached_input_tokens:  <n> * PRICE_CACHED_INPUT_TOKEN_MICROCENTS  = <x>
-reasoning_tokens:     <n> * PRICE_REASONING_TOKEN_MICROCENTS     = <x>
-output_tokens:        <n> * PRICE_OUTPUT_TOKEN_MICROCENTS        = <x>
+cached_input_tokens:   1,000 * 3 microcents/token   =   3,000 microcents
+reasoning_tokens:        500 * 150 microcents/token =  75,000 microcents
+output_tokens:         2,000 * 150 microcents/token = 300,000 microcents
 -------------------------------------------------------------
-total (micro-cents) = <sum>  ->  <sum / MICROCENTS_PER_CENT> cents
+total (micro-cents) = 378,000 microcents  ->  378,000 / 10,000 = 37.8 (38 cents rounded)
 ```
 
+Test output:
 ```
 $ uv run pytest tests/test_cost_calculation.py -v
-# paste output here — should match hand-computed total exactly
+
+=============================================================== test session starts ===============================================================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0 -- /mnt/Projects/Projects/Usage-Metering-Billing-Service/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /mnt/Projects/Projects/Usage-Metering-Billing-Service
+configfile: pyproject.toml
+plugins: anyio-4.14.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item                                                                                                                                  
+
+tests/test_cost_calculation.py::test_cost_service_rollup_aggregation PASSED                                                                 [100%]
+
+================================================================ 1 passed in 0.04s ================================================================
 ```
 
 ## 3. Stripe webhook security
