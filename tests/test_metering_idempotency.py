@@ -1,6 +1,4 @@
-import pytest
-
-from src.services.metering import MeterService
+from src.services.meter_service import MeterService
 from src.db.models import UsageEvent, Tenant, Plan
 
 
