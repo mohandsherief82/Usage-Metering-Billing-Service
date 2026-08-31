@@ -114,7 +114,7 @@ Two practical routes:
       signature must raise → return 400.
 - [X] Dedupe using the `WebhookEvent` table: check `event.id` before processing, upsert it
       after — replaying the same event (via `stripe trigger` or CLI replay) must be a no-op.
-- [ ] Handle at minimum: `checkout.session.completed`, `customer.subscription.updated`,
+- [X] Handle at minimum: `checkout.session.completed`, `customer.subscription.updated`,
       `customer.subscription.deleted` → update `Tenant.plan_id` / `Subscription.status`.
 - [X] Test locally end-to-end with `stripe listen --forward-to localhost:8000/webhooks/stripe`
       and `stripe trigger checkout.session.completed` — no tunnel/public URL needed.
