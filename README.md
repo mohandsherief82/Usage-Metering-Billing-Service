@@ -54,6 +54,12 @@ tmuxp load .
 
 ```
 
+Also, you can use the created `Makefile`, to see all available functions in the makefile run:
+```bash
+make help
+
+```
+
 ## Project layout
 
 ```
