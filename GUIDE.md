@@ -135,7 +135,7 @@ Two practical routes:
 ## 8. Tests
 
 - [X] `tests/test_metering_idempotency.py` — double-submit proof (see §3).
-- [ ] `tests/test_quota.py` — under-limit allowed, at-limit rejected with correct code+message.
+- [] `tests/test_quota.py` — under-limit allowed, at-limit rejected with correct code+message.
 - [X] `tests/test_cost_calculation.py` — hand-computed totals (see §5).
 - [ ] `tests/test_webhooks.py` — valid signature accepted, invalid rejected (400), replay ignored.
 - [ ] `uv run pytest -v` output captured into EVIDENCE.md alongside the manual transcripts.

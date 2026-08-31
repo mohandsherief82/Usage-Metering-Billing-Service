@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from db.models import Tenant, Plan, UsageEvent
+from db.models import Tenant, Plan, UsageEvent, TenantStatus
 
 
 class QuotaService:
@@ -17,11 +17,13 @@ class QuotaService:
                 detail={"message": f"Tenant '{tenant_id}' not found."},
             )
 
+        status_val = tenant.status.value if isinstance(tenant.status, TenantStatus) else tenant.status
+
         if tenant.status in ["past_due", "canceled"]:
             raise HTTPException(
                 status_code=status.HTTP_402_PAYMENT_REQUIRED,
                 detail={
-                    "message": f"Tenant '{tenant_id}' account status is '{tenant.status}'. Payment required."
+                    "message": f"Tenant '{tenant_id}' account status is '{status_val}'. Payment required."
                 },
             )
 
@@ -34,10 +36,10 @@ class QuotaService:
             self.db.query(UsageEvent).filter_by(tenant_id=tenant_id).count()
         )
 
-        if total_used > plan.monthly_quota:
+        if total_used > plan.monthly_api_call_quota:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 detail={
-                    "message": f"tenant {tenant_id} is at {total_used}/{plan.monthly_quota} API calls for this billing period"
+                    "message": f"tenant {tenant_id} is at {total_used}/{plan.monthly_api_call_quota} API calls for this billing period"
                 },
             )
