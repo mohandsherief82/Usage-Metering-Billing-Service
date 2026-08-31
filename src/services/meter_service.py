@@ -1,14 +1,43 @@
-"""
-MeterService.record(tenant_id, event_type, quantity, idempotency_key)
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
-Contract (see GUIDE.md §3):
-1. Attempt to insert a UsageEvent with this idempotency_key.
-2. If a row with that key already exists, return the ORIGINAL result —
-   do not insert a second event, do not re-run quota logic as if it were new.
-3. Only a genuinely new event proceeds to quota checking.
+from src.db.models import UsageEvent
 
-This is the one place double-counting can be introduced or prevented —
-keep it small and covered by tests/test_metering_idempotency.py.
-"""
 
-# TODO: implement record()
+class MeterService:
+
+    def __init__(self, db: Session):
+        self.db = db
+
+    def record(
+        self,
+        tenant_id: str,
+        event_type: str,
+        quantity: int,
+        idempotency_key: str,
+        metadata: dict | None = None,
+    ) -> tuple[UsageEvent, bool]:
+        event = UsageEvent(
+            tenant_id=tenant_id,
+            event_type=event_type,
+            quantity=quantity,
+            idempotency_key=idempotency_key,
+            metadata=metadata,
+        )
+
+        try:
+            self.db.add(event)
+            self.db.commit()
+
+            self.db.refresh(event)
+
+            return event, True
+        except IntegrityError:
+            self.db.rollback()
+            existing_event = (
+                self.db.query(UsageEvent)
+                .filter_by(idempotency_key=idempotency_key)
+                .first()
+            )
+
+            return existing_event, False

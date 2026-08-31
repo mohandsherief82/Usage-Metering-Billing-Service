@@ -1,6 +1,5 @@
-# src/db/__init__.py
-from db.models import Base, Plan, Subscription, Tenant, UsageEvent, WebhookEvent
-from db.session import SessionLocal, engine, get_db
+from src.db.models import Base, Plan, Subscription, Tenant, UsageEvent, WebhookEvent
+from src.db.session import SessionLocal, engine, get_db
 
 __all__ = [
     "Base",

@@ -48,6 +48,18 @@ uv run pytest -v
 
 ```
 
+If you want to run everything from a single command and terminal window and you have tmux and the tmuxp uv tool, you can run:
+```bash
+tmuxp load .
+
+```
+
+Also, you can use the created `Makefile`, to see all available functions in the makefile run:
+```bash
+make help
+
+```
+
 ## Project layout
 
 ```
