@@ -10,7 +10,7 @@ from src.db.models import Plan, Subscription, SubscriptionStatus, Tenant, Tenant
 
 class StripeService:
     def __init__(self):
-        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe.api_key = settings.stripe_secret_key
 
     @staticmethod
     def verify_webhook_signature(payload: bytes, sig_header: str) -> stripe.Event:
@@ -24,7 +24,7 @@ class StripeService:
             event = stripe.Webhook.construct_event(
                 payload=payload,
                 sig_header=sig_header,
-                secret=settings.STRIPE_WEBHOOK_SECRET,
+                secret=settings.stripe_webhook_secret,
             )
 
             return event

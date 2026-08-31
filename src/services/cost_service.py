@@ -4,7 +4,8 @@ from typing import Dict, Any, List
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from src.config import (PRICE_PER_API_CALL_CENTS,
+from src.config import (
+    PRICE_PER_API_CALL_CENTS,
     PRICE_INPUT_TOKEN_MICROCENTS,
     PRICE_CACHED_INPUT_TOKEN_MICROCENTS,
     PRICE_REASONING_TOKEN_MICROCENTS,

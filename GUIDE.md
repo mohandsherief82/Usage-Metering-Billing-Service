@@ -118,7 +118,7 @@ Two practical routes:
       `customer.subscription.deleted` → update `Tenant.plan_id` / `Subscription.status`.
 - [X] Test locally end-to-end with `stripe listen --forward-to localhost:8000/webhooks/stripe`
       and `stripe trigger checkout.session.completed` — no tunnel/public URL needed.
-- [ ] **EVIDENCE.md proof**: paste a webhook log showing (a) one legitimate signed event
+- [X] **EVIDENCE.md proof**: paste a webhook log showing (a) one legitimate signed event
       processed, (b) a forged/tampered signature rejected with 400, (c) the same event id
       replayed and ignored.
 
@@ -150,16 +150,16 @@ just this one. Two of them aren't covered by §1–8 above and are easy to miss:
       request models for this — a body that fails schema validation should never reach
       service code. Covers e.g. negative `quantity`, missing `idempotency_key`, unknown
       `tenant_id`.
-- [ ] **≥1 background job** — some slow/bulk work must run off the request path, with
+- [X] **≥1 background job** — some slow/bulk work must run off the request path, with
       retries and a failure alert (even just a log line at ERROR level counts as the
       "alert" for a capstone). The natural fit here is the **reconciliation job** from §11 —
       if you pick that as your one deep-dive stretch goal, it satisfies this requirement too;
       otherwise you need a smaller stand-in (e.g. a periodic job that recomputes cost
       rollups) so this box isn't left unchecked.
-- [ ] Secrets clean (env only, never logged) — already covered by §0.
-- [ ] Cost tracked per call, attributed, with a budget guard — already covered by §5
+- [X] Secrets clean (env only, never logged) — already covered by §0.
+- [X] Cost tracked per call, attributed, with a budget guard — already covered by §5
       (quota enforcement *is* the budget guard here).
-- [ ] Layered architecture (data/logic/HTTP separated) — already the shape of `db/` /
+- [X] Layered architecture (data/logic/HTTP separated) — already the shape of `db/` /
       `services/` / `api/` in the folder structure.
 - [X] Idempotency where it matters — already covered by §3.
 

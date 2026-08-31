@@ -1,5 +1,8 @@
 from typing import Any, Optional, Dict
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
+from datetime import datetime
+
+from src.db.models import UsageEventType
 
 
 class UsageRecordRequest(BaseModel):
@@ -9,6 +12,20 @@ class UsageRecordRequest(BaseModel):
     quantity: int = Field(..., gt=0)
     idempotency_key: str = Field(..., min_length=1)
     metadata: Optional[Dict[str, Any]] = None
+
+
+class UsageRecordResponse(BaseModel):
+    id: int
+    tenant_id: str
+    event_type: UsageEventType
+    quantity: int
+    meta: Optional[Dict[str, Any]] = Field(default=None, alias="metadata")
+    idempotency_key: str
+    created_at: datetime
+
+    # Enable ORM mode so FastAPI can read directly from SQLAlchemy UsageEvent model
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
 
 class CheckoutRequest(BaseModel):
     tenant_id: str

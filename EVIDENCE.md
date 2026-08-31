@@ -72,17 +72,53 @@ tests/test_cost_calculation.py::test_cost_service_rollup_aggregation PASSED     
 
 ## 3. Stripe webhook security
 
-Test: `tests/test_webhooks.py`
+### Legitimate Signed Event Processed
 
 ```
 $ stripe trigger checkout.session.completed
-# paste stripe CLI + server log showing: signature verified, event processed, tenant updated
+Running in Test mode sandbox · sandbox (acct_1U920E4JOVZvbHpt)
+Setting up fixture for: product
+Running fixture for: product
+Setting up fixture for: price
+Running fixture for: price
+Setting up fixture for: checkout_session
+Running fixture for: checkout_session
+Setting up fixture for: payment_page
+Running fixture for: payment_page
+Setting up fixture for: payment_method
+Running fixture for: payment_method
+Setting up fixture for: payment_page_confirm
+Running fixture for: payment_page_confirm
+Trigger succeeded! Check dashboard for event details.
+```
 
-# forged signature:
-$ curl -X POST localhost:8000/webhooks/stripe -H "Stripe-Signature: bad" -d '{...}'
-# expect: 400
+### Forged signature:
 
-# replay of the same event id:
+```
+$ curl -i -X POST http://localhost:8000/webhooks/stripe
+-H "Content-Type: application/json"
+-H "Stripe-Signature: t=12345,v1=invalid_fake_signature_hash"
+-d '{"id": "evt_forged_123", "type": "checkout.session.completed"}'
+
+HTTP/1.1 400 Bad Request
+date: Mon, 31 Aug 2026 15:12:18 GMT
+server: uvicorn
+content-length: 103
+content-type: application/json
+
+{"detail": "Invalid webhook signature: No signatures found matching the expected signature for payload"}
+```
+
+### Replay of the same event id:
+
+```
 $ stripe events resend evt_...
-# paste log showing it was recognized as already-processed and ignored (no duplicate side effect)
+Running in Test mode sandbox · sandbox (acct_1U920E4JOVZvbHpt)
+{
+"id": "evt_3UAWrG4JOVZvbHpt0tYVyvLz",
+"object": "event",
+"api_version": "2026-08-26.dahlia",
+"created": 1788189053,
+"type": "charge.updated"
+}
 ```
