@@ -1,0 +1,10 @@
+session_name: saas-dev
+windows:
+  - window_name: workspace
+    layout: main-vertical
+    panes:
+      - shell_command: uv run python src/tui/app.py
+        focus: true
+      - shell_command: podman compose up
+      - shell_command: uv run uvicorn main:app --reload
+      - shell_command: stripe listen --forward-to localhost:8000/webhooks/stripe
