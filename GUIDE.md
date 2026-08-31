@@ -112,11 +112,11 @@ Two practical routes:
 - [X] Webhook endpoint: https://docs.stripe.com/webhooks — verify with
       `stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)`; a bad
       signature must raise → return 400.
-- [ ] Dedupe using the `WebhookEvent` table: check `event.id` before processing, upsert it
+- [X] Dedupe using the `WebhookEvent` table: check `event.id` before processing, upsert it
       after — replaying the same event (via `stripe trigger` or CLI replay) must be a no-op.
 - [ ] Handle at minimum: `checkout.session.completed`, `customer.subscription.updated`,
       `customer.subscription.deleted` → update `Tenant.plan_id` / `Subscription.status`.
-- [ ] Test locally end-to-end with `stripe listen --forward-to localhost:8000/webhooks/stripe`
+- [X] Test locally end-to-end with `stripe listen --forward-to localhost:8000/webhooks/stripe`
       and `stripe trigger checkout.session.completed` — no tunnel/public URL needed.
 - [ ] **EVIDENCE.md proof**: paste a webhook log showing (a) one legitimate signed event
       processed, (b) a forged/tampered signature rejected with 400, (c) the same event id
@@ -161,7 +161,7 @@ just this one. Two of them aren't covered by §1–8 above and are easy to miss:
       (quota enforcement *is* the budget guard here).
 - [ ] Layered architecture (data/logic/HTTP separated) — already the shape of `db/` /
       `services/` / `api/` in the folder structure.
-- [ ] Idempotency where it matters — already covered by §3.
+- [X] Idempotency where it matters — already covered by §3.
 
 ## 10. Docs & submission pack (Section 10–11 deliverables)
 
