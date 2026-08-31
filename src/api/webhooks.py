@@ -4,10 +4,10 @@ from fastapi import APIRouter, Depends, Header, Request, status
 
 from sqlalchemy.orm import Session
 
-from db.models import WebhookEvent
-from db.session import get_db
+from src.db.models import WebhookEvent
+from src.db.session import get_db
 
-from services.stripe_service import StripeService
+from src.services.stripe_service import StripeService
 
 webhook_router = APIRouter(prefix="/webhooks", tags=["Webhooks"])
 

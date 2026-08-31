@@ -36,3 +36,41 @@ class StripeService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Invalid webhook payload: {str(e)}",
             )
+
+    @staticmethod
+    def create_checkout_session(
+            tenant_id: str,
+            stripe_price_id: str,
+            success_url: str,
+            cancel_url: str,
+            stripe_customer_id: str | None = None,
+    ) -> stripe.checkout.Session:
+        try:
+            session_kwargs = {
+                "mode": "subscription",
+                "payment_method_types": ["card"],
+
+                "line_items": [
+                    {
+                        "price": stripe_price_id,
+                        "quantity": 1,
+                    }
+                ],
+
+                "client_reference_id": tenant_id,
+                "metadata": {"tenant_id": tenant_id},
+
+                "success_url": success_url,
+                "cancel_url": cancel_url,
+            }
+
+            if stripe_customer_id:
+                session_kwargs["customer"] = stripe_customer_id
+
+            return stripe.checkout.Session.create(**session_kwargs)
+
+        except stripe.error.StripeError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Stripe Checkout error: {str(e)}",
+            )

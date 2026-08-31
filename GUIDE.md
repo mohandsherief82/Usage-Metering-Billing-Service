@@ -106,7 +106,7 @@ Two practical routes:
 
 ## 6. Stripe integration
 
-- [ ] Checkout Session: https://docs.stripe.com/checkout/quickstart — create a Checkout
+- [X] Checkout Session: https://docs.stripe.com/checkout/quickstart — create a Checkout
       Session server-side for a plan's Stripe Price, redirect the client to
       `session.url`, confirm `checkout.session.completed` arrives via webhook.
 - [X] Webhook endpoint: https://docs.stripe.com/webhooks — verify with
@@ -145,7 +145,7 @@ Two practical routes:
 Section 12 of the brief lists requirements that apply across every FlyRank capstone, not
 just this one. Two of them aren't covered by §1–8 above and are easy to miss:
 
-- [ ] **Validation at the boundary** — every API route rejects malformed input with a clean
+- [X] **Validation at the boundary** — every API route rejects malformed input with a clean
       4xx (`422`/`400` with a body explaining what's wrong), never a raw `500`. Use Pydantic
       request models for this — a body that fails schema validation should never reach
       service code. Covers e.g. negative `quantity`, missing `idempotency_key`, unknown

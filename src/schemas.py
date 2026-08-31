@@ -9,3 +9,9 @@ class UsageRecordRequest(BaseModel):
     quantity: int = Field(..., gt=0)
     idempotency_key: str = Field(..., min_length=1)
     metadata: Optional[Dict[str, Any]] = None
+
+class CheckoutRequest(BaseModel):
+    tenant_id: str
+    plan_id: int
+    success_url: str = "http://localhost:8000/success"
+    cancel_url: str = "http://localhost:8000/cancel"

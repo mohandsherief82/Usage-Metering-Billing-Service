@@ -1,6 +1,8 @@
 from fastapi import HTTPException, status
+
 from sqlalchemy.orm import Session
-from db.models import Tenant, Plan, UsageEvent, TenantStatus
+
+from src.db.models import Tenant, Plan, UsageEvent, TenantStatus
 
 
 class QuotaService:

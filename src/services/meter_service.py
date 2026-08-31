@@ -1,6 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from db.models import UsageEvent
+
+from src.db.models import UsageEvent
 
 
 class MeterService:

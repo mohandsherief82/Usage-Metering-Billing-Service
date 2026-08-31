@@ -4,7 +4,7 @@ from typing import Dict, Any, List
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from config import (PRICE_PER_API_CALL_CENTS,
+from src.config import (PRICE_PER_API_CALL_CENTS,
     PRICE_INPUT_TOKEN_MICROCENTS,
     PRICE_CACHED_INPUT_TOKEN_MICROCENTS,
     PRICE_REASONING_TOKEN_MICROCENTS,
@@ -12,7 +12,8 @@ from config import (PRICE_PER_API_CALL_CENTS,
     MICROCENTS_PER_CENT
 )
 
-from db.models import UsageEvent, UsageEventType
+from src.db.models import UsageEvent, UsageEventType
+
 
 class CostService:
 
