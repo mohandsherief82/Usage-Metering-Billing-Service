@@ -9,7 +9,20 @@ Test: `tests/test_metering_idempotency.py`
 
 ```
 $ uv run pytest tests/test_metering_idempotency.py -v
-# paste output here
+
+=============================================================== test session starts ===============================================================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0 -- /mnt/Projects/Projects/Usage-Metering-Billing-Service/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /mnt/Projects/Projects/Usage-Metering-Billing-Service
+configfile: pyproject.toml
+plugins: anyio-4.14.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item                                                                                                                                  
+
+tests/test_metering_idempotency.py::test_record_usage_idempotency PASSED                                                                    [100%]
+
+================================================================ 1 passed in 0.05s ================================================================
+
 ```
 
 Manual proof — same request sent twice with the same Idempotency-Key:

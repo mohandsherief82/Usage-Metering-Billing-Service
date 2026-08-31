@@ -1,8 +1,38 @@
-"""
-Thin wrapper around the Stripe SDK (test mode only):
-- create_checkout_session(tenant, plan) -> Checkout Session URL
-- verify_and_parse_webhook(payload, sig_header) -> stripe.Event
-  (raises on bad signature -> caller returns 400)
-"""
+import stripe
 
-# TODO: implement using `stripe` package + settings.stripe_secret_key
+from fastapi import HTTPException, status
+
+from src.config import settings
+
+
+class StripeService:
+    def __init__(self):
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    @staticmethod
+    def verify_webhook_signature(payload: bytes, sig_header: str) -> stripe.Event:
+        if not sig_header:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Missing Stripe-Signature header",
+            )
+
+        try:
+            event = stripe.Webhook.construct_event(
+                payload=payload,
+                sig_header=sig_header,
+                secret=settings.STRIPE_WEBHOOK_SECRET,
+            )
+
+            return event
+        except stripe.error.SignatureVerificationError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid webhook signature: {str(e)}",
+            )
+
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid webhook payload: {str(e)}",
+            )
