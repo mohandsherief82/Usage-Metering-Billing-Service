@@ -23,12 +23,6 @@ class UsageRecordResponse(BaseModel):
     idempotency_key: str
     created_at: datetime
 
-    # Constructed explicitly in api/usage.py rather than via from_attributes
-    # auto-mapping — the ORM attribute is `meta` (not `metadata`, which
-    # SQLAlchemy's DeclarativeBase reserves for its own schema registry),
-    # so automatic attribute-name/alias lookup would silently pick up that
-    # registry object instead of the real value. See meter_service.py for
-    # the same underlying collision on the write side.
     model_config = ConfigDict(from_attributes=True)
 
 

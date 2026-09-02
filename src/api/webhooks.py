@@ -35,11 +35,6 @@ async def stripe_webhook(
     db.add(webhook_record)
     db.commit()
 
-    # event is a stripe.Event / StripeObject, not a dict — it does not
-    # support .get(). Converting once here means every existing .get()
-    # call inside the StripeService handlers (on session_obj / sub_obj)
-    # keeps working unchanged, since to_dict() recursively converts every
-    # nested StripeObject to a plain dict too.
     event_data = event.to_dict().get("data", {})
 
     if event.type == "checkout.session.completed":

@@ -35,3 +35,64 @@ exact bytes to stripe.Webhook.construct_event."
 - **Where AI helped**: Code generation
 - **Where it was wrong / had to be corrected**: nothing. 
 - **What I changed and why**: after reviewing the generated artificats, I have found everything defined perfectly according to the design I choose and available in the GUIDE.md file. 
+
+### <date> — Webhook routing, cost totals, metadata persistence (verification pass)
+- **Where AI helped**: Wrote `tests/test_webhooks.py` (6 tests: valid signature + full
+  state-sync, forged signature → 400, missing signature → 400, replay → processed once,
+  subscription updated/deleted sync). While getting it to actually pass against the real
+  app (not just compile), found and fixed four bugs that had slipped past the existing
+  test suite and were undetected in the checked-off GUIDE.md.
+- **Where it was wrong / had to be corrected**:
+  1. `api/webhooks.py` had two identically-routed `@webhook_router.post("/stripe", ...)`
+     handlers. FastAPI registered both; the incomplete first one always won, so the real
+     one (which synced Tenant/Subscription state) was permanently dead code. Proved live:
+     a valid signed `checkout.session.completed` returned `200 success` but never touched
+     the tenant.
+  2. `CostService.rollup()`'s `total_cents`/`total_microcents` were hardcoded to always
+     return 0 — a line inside the accumulation loop was overwriting the running total
+     instead of adding to it. Reproduced EVIDENCE.md's own hand-computed scenario
+     (1,000 cached input + 500 reasoning + 2,000 output tokens) and got `0`, not `378,000`/
+     `38` as documented. The existing test only checked the per-type breakdown, never the
+     total — exactly how this slipped through.
+  3. `MeterService.record()` passed `metadata=metadata` into the `UsageEvent` constructor.
+     The real mapped attribute is `meta` (SQLAlchemy reserves `metadata` for its own
+     schema registry) — the kwarg silently shadowed an unrelated class attribute instead
+     of raising an error, so metadata was always discarded.
+  4. Same collision, opposite direction: `UsageRecordResponse`'s `meta` field with
+     `alias="metadata"` caused Pydantic's `from_attributes` lookup to resolve
+     `event.metadata` (SQLAlchemy's registry object) instead of `event.meta`, crashing
+     `POST /usage/record` with a raw 500 on response serialization.
+  5. `TestClient` + in-memory SQLite needed `poolclass=StaticPool` in `conftest.py` — each
+     new connection was otherwise getting its own separate `:memory:` database, so tables
+     "didn't exist" from the request-handling thread's point of view.
+- **What I changed and why**: Removed the dead webhook handler, keeping the complete one;
+  fixed it to convert the Stripe event to a plain dict once at the router boundary
+  (`stripe.StripeObject` doesn't support `.get()` like a dict in this SDK version — every
+  `.get()` call throughout the handler logic would otherwise raise `AttributeError`).
+  Fixed the cost accumulation loop. Changed `metadata=metadata` to `meta=metadata` in
+  `MeterService.record()`. Rewrote `UsageRecordResponse` to a plain `metadata` field
+  constructed explicitly in the route handler rather than relying on ORM auto-mapping.
+  Added `StaticPool` to the test fixture. Strengthened `test_cost_calculation.py` to
+  assert on `total_cents`/`total_microcents` directly, not just the breakdown, so bug #2
+  can't silently regress. Rewrote `EVIDENCE.md` with real transcripts from the fixed code
+  (live curl requests against a running server, not just pytest output).
+
+### Rate limiting: Retry-After header on 429
+- **Where AI helped**: Added a `Retry-After` header to `QuotaService.check_quota()`'s 429
+  response, computed as seconds until the tenant's quota resets.
+- **Where it was wrong / had to be corrected**: First version compared
+  `subscription.current_period_end` (read back from SQLite) against
+  `datetime.now(timezone.utc)` and got `TypeError: can't compare offset-naive and
+  offset-aware datetimes` — SQLite doesn't reliably round-trip tzinfo through
+  `DateTime(timezone=True)`. Also, my first attempt at adding a test for this accidentally
+  merged its body into the neighboring `test_quota_nonexistent_tenant_raises_404` test via
+  a bad find-and-replace — caught it because the test count didn't match what I expected
+  (4 shown instead of 5), split them back into two proper functions.
+- **What I changed and why**: If a naive datetime comes back from the DB, treat it as UTC
+  (the convention every write already uses) before comparing. Retry-After prefers the
+  tenant's actual `Subscription.current_period_end` when one exists (matches real Stripe
+  billing periods, which don't align to calendar months); falls back to end-of-calendar-
+  month for tenants with no subscription (the Free tier). Added a test asserting the
+  header value matches a seeded subscription's period end, not just "some positive
+  number", and verified live against a running server (real `429` with a real
+  `retry-after: 2465757` header, not just a passing unit test).
