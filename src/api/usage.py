@@ -36,4 +36,12 @@ def record_usage(
 
         quota_service.check_quota(payload.tenant_id)
 
-    return event
+    return UsageRecordResponse(
+        id=event.id,
+        tenant_id=event.tenant_id,
+        event_type=event.event_type,
+        quantity=event.quantity,
+        metadata=event.meta,
+        idempotency_key=event.idempotency_key,
+        created_at=event.created_at,
+    )

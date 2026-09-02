@@ -61,3 +61,9 @@ def test_cost_service_rollup_aggregation(db_session):
     assert breakdown_map["output_tokens"] == 200
 
     assert "cached_input_tokens" not in breakdown_map
+
+    # input_tokens: 1500 * 30 = 45,000 microcents
+    # output_tokens:  200 * 150 = 30,000 microcents
+    # total: 75,000 microcents = 7.5 cents -> 8 (ceiling)
+    assert result["total_microcents"] == 75_000
+    assert result["total_cents"] == 8

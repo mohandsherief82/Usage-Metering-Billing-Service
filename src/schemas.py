@@ -19,12 +19,17 @@ class UsageRecordResponse(BaseModel):
     tenant_id: str
     event_type: UsageEventType
     quantity: int
-    meta: Optional[Dict[str, Any]] = Field(default=None, alias="metadata")
+    metadata: Optional[Dict[str, Any]] = None
     idempotency_key: str
     created_at: datetime
 
-    # Enable ORM mode so FastAPI can read directly from SQLAlchemy UsageEvent model
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+    # Constructed explicitly in api/usage.py rather than via from_attributes
+    # auto-mapping — the ORM attribute is `meta` (not `metadata`, which
+    # SQLAlchemy's DeclarativeBase reserves for its own schema registry),
+    # so automatic attribute-name/alias lookup would silently pick up that
+    # registry object instead of the real value. See meter_service.py for
+    # the same underlying collision on the write side.
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CheckoutRequest(BaseModel):

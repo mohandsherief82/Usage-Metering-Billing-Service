@@ -22,7 +22,7 @@ class MeterService:
             event_type=event_type,
             quantity=quantity,
             idempotency_key=idempotency_key,
-            metadata=metadata,
+            meta=metadata,
         )
 
         try:

@@ -55,7 +55,7 @@ class CostService:
 
             cost_microcents = quantity * unit_price
 
-            total_microcents = (total_microcents + MICROCENTS_PER_CENT - 1) // MICROCENTS_PER_CENT if total_microcents > 0 else 0
+            total_microcents += cost_microcents
 
             breakdown.append(
                 {
