@@ -1,9 +1,12 @@
-from tui.data import BillingDataSource, TenantUsage
-from tui.widgets import AppHeader
+from data import BillingDataSource, TenantUsage
+from widgets.header import AppHeader
+
 from textual import work
 from textual.app import ComposeResult
+
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
+
 from textual.widgets import Footer, Label, ListItem, ListView, Sparkline, Static
 
 REFRESH_INTERVAL = 4.0

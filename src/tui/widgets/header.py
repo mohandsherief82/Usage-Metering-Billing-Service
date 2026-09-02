@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from tui.data import SourceMode
+from data import SourceMode
 from textual.app import ComposeResult
 from textual.containers import Horizontal
 from textual.reactive import reactive

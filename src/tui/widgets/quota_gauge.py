@@ -1,4 +1,4 @@
-from tui.data import TenantUsage
+from data import TenantUsage
 from rich.text import Text
 from textual.reactive import reactive
 from textual.widgets import Static

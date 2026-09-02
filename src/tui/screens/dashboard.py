@@ -1,9 +1,14 @@
-from tui.data import BillingDataSource, TenantUsage
-from tui.widgets import AppHeader, QuotaGauge, StatCard
+from data import BillingDataSource, TenantUsage
+from widgets.header import AppHeader
+from widgets.quota_gauge import QuotaGauge
+from widgets.stat_card import StatCard
+
 from textual import work
 from textual.app import ComposeResult
+
 from textual.containers import Horizontal, VerticalScroll
 from textual.screen import Screen
+
 from textual.widgets import Footer, Label
 
 REFRESH_INTERVAL = 3.0

@@ -2,8 +2,8 @@ from pathlib import Path
 
 from textual.app import App
 
-from tui.data import BillingDataSource
-from tui.screens import DashboardScreen, HelpScreen, TenantsScreen, UsageLogScreen
+from data import BillingDataSource
+from screens import DashboardScreen, HelpScreen, TenantsScreen, UsageLogScreen
 
 THEME_PATH = Path(__file__).parent / "theme.tcss"
 

@@ -1,7 +1,9 @@
-from tui.data import BillingDataSource
-from tui.widgets import AppHeader
+from data import BillingDataSource
+from widgets.header import AppHeader
+
 from textual import work
 from textual.app import ComposeResult
+
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Label
 
