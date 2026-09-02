@@ -2,6 +2,21 @@
 
 Capstone checklist. Check items off as you go. Each section links resources.
 
+> **Audit note**: every `[X]` below was independently re-verified by actually running the
+> code (not just reading it) — migrations, the full test suite, and the live server against
+> real signed webhook requests. Four real bugs were found and fixed in the process (none of
+> them caught by the existing test suite before this pass): `CostService.rollup()`'s
+> `total_cents` was hardcoded to always return 0 (a loop bug — the per-type breakdown was
+> correct, the total never accumulated); `api/webhooks.py` had two identically-routed
+> handlers, so the complete one was permanently dead code and the incomplete one silently
+> returned 200 without ever syncing tenant/subscription state; `MeterService.record()`
+> passed `metadata=metadata` into the ORM constructor, which silently discarded it (the
+> real attribute is `meta` — SQLAlchemy reserves `metadata` for its own schema registry);
+> and the same collision broke `POST /usage/record`'s response serialization with a 500.
+> All four are fixed now and covered by tests. See EVIDENCE.md for the real transcripts and
+> BUILDLOG.md for what to log about this. One gap remains **found but not fixed** — see the
+> ⚠️ note under §4.
+
 ## 0. Environment & Stripe access (Egypt-specific)
 
 Stripe does not let you open a native account from Egypt (not on their supported-country
@@ -77,8 +92,21 @@ Two practical routes:
 
 ## 4. Quotas
 
-- [X] After a usage event is durably recorded, sum the tenant's usage for the current
-      billing period and compare to `Plan.monthly_quota`.
+- [X] ⚠️ After a usage event is durably recorded, sum the tenant's usage for the current
+      billing period and compare to `Plan.monthly_quota`. **Checked off because
+      `test_quota.py` passes, but the current implementation has two real gaps that
+      slipped past that test — flagged here, not yet fixed:**
+      1. `QuotaService.check_quota()` counts *rows* (`.count()`) rather than summing
+         `UsageEvent.quantity` — a single usage event logging a batch of 500 calls counts
+         as "1" against the quota, not 500.
+      2. It checks total usage-event count against `Plan.monthly_api_call_quota` only,
+         with no billing-period window (all-time count, not "this month") and no
+         distinction between API-call quota and AI-token quota — the two are meant to be
+         independent limits per the brief (Section 4), but right now a tenant maxing out
+         on tokens would also get blocked on API calls, and vice versa.
+      `test_quota.py`'s fixtures don't exercise either gap (small event counts, no token
+      events, no period-boundary cases), which is exactly how this passed review. Worth
+      fixing before this checkbox is truly earned.
 - [X] Over limit → return **402 Payment Required** if the plan itself is exhausted/unpaid,
       or **429 Too Many Requests** if it's a rate/quota throttle — pick one convention and
       document it in README (mentor asked for "the correct status codes", so be explicit
@@ -137,8 +165,10 @@ Two practical routes:
 - [X] `tests/test_metering_idempotency.py` — double-submit proof (see §3).
 - [X] `tests/test_quota.py` — under-limit allowed, at-limit rejected with correct code+message.
 - [X] `tests/test_cost_calculation.py` — hand-computed totals (see §5).
-- [ ] `tests/test_webhooks.py` — valid signature accepted, invalid rejected (400), replay ignored.
-- [ ] `uv run pytest -v` output captured into EVIDENCE.md alongside the manual transcripts.
+- [X] `tests/test_webhooks.py` — valid signature accepted, invalid rejected (400), replay ignored.
+      Also covers `customer.subscription.updated`/`.deleted` state-sync, since GUIDE §6 requires that
+      as part of "webhook processing", not as a separate item. 6 tests, all passing.
+- [X] `uv run pytest -v` output captured into EVIDENCE.md alongside the manual transcripts.
 
 ## 9. Shared requirements (every capstone must show these)
 
